@@ -25,9 +25,10 @@ namespace ExploreCalifornia
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
+            app.Use(async (context, next) =>
             {
                 await context.Response.WriteAsync("Hello World!");
+                await next();
             });
 
             app.Run(async (context) =>
