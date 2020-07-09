@@ -20,6 +20,8 @@ namespace ExploreCalifornia
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseExceptionHandler("/error.html");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -27,14 +29,14 @@ namespace ExploreCalifornia
 
             app.Use(async (context, next) =>
             {
-                await context.Response.WriteAsync("Hello World!");
-                await next();
-            });
+                if (context.Request.Path.Value.Contains("invalid"))
+                    throw new Exception("ERROR!");
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Cheese");
-            });
+                await next();
+            }
+            );
+
+            app.UseFileServer();
         }
     }
 }
